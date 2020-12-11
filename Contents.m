@@ -16,3 +16,4 @@
 %   histogram                 - Return default histogram object for given axes and data
 %   legend                    - Return default Legend object handle
 %   line                      - Returns default line primitive object handle
+%   patch                     - Returns patch with preferred default values
