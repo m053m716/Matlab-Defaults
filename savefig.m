@@ -48,7 +48,10 @@ switch nargin
       error('Too many input arguments. default.savefig takes up to 3 args.');
 end
 
-if exist(outPath,'dir')==0
+outPath = strrep(outPath,"\","/");
+F = dir(outPath);
+
+if isempty(F) && ~isempty(outPath) && outPath~=""
    mkdir(outPath);
 end
 
@@ -73,7 +76,7 @@ delete(fig);
          outPath = pwd;
       end
       
-      if nargin < 1
+      if nargin < 2
          filename = f;
       else
          filename = strcat(f,"_",tag);
