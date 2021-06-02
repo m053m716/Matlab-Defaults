@@ -56,8 +56,16 @@ if isempty(F) && ~isempty(outPath) && outPath~=""
 end
 
 fname = fullfile(outPath,filename);
+set(fig, 'Renderer', 'painters');
+if isempty(fig.UserData) || isstruct(fig.UserData)
+   fig.UserData = struct(...
+       'VectorGraphicsExported', true, ...
+       'VectorGraphicsName', fname, ...
+       'VectorGraphicsExportFcn', @()default.savefig(fig, filename, tag) ...
+       ); 
+end
 saveas(fig,fname,"fig");
-saveas(fig,fname,"eps");
+saveas(fig,fname,"svg");
 saveas(fig,fname,"png");
 delete(fig);
 
