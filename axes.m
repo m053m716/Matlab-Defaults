@@ -16,9 +16,13 @@ function [ax,x_txt_obj,y_txt_obj,title_txt_obj] = axes(fig,varargin)
 
 if nargin < 1
    fig = default.figure();
+   ax = axes(fig);
+elseif isa(fig, 'matlab.graphics.axis.Axes')
+   ax = fig;
 elseif ~isa(fig,'matlab.ui.Figure')
    varargin = [fig, varargin];
    fig = gcf;
+   ax = axes(fig);
 end
 
 pars = struct;
@@ -35,8 +39,7 @@ for iV = 1:2:numel(varargin)
    end
 end
 varargin(rmVec) = [];
-
-ax = axes(fig,...
+set(ax, ...
    'NextPlot','add',...
    'Units','Normalized',...
    'Position',[ 0.20  0.20  0.75  0.70],...
@@ -51,7 +54,6 @@ ax = axes(fig,...
    'FontName','Arial',...
    'FontSize',13,...
    varargin{:});
-
 x_txt_obj = ax.XLabel;
 y_txt_obj = ax.YLabel;
 title_txt_obj = ax.Title;
