@@ -1,4 +1,4 @@
-function savefig(fig,filename,tag,skip_delete)
+function savefig(fig,filename,tag,skip_delete,formats)
 %SAVEFIG Default figure-saving behavior
 %
 %  default.savefig(fig); -> % figure with handle `fig` to "Untitled__.fig"
@@ -16,6 +16,10 @@ function savefig(fig,filename,tag,skip_delete)
 %  skip_delete - (Optional: default is false) set to `true` to prevent the
 %                   default behavior of deleting the figure handle when
 %                   done saving it.
+%  formats     - (Optional: default is [".png", ".svg", ".fig"] but you can
+%                   do a reduced subset of this to make it only save a
+%                   certain type e.g. [".fig", ".png"] would only save the
+%                   fig file and png but not the svg.)
 %
 % Output
 %  - none -    - The figure will be saved and, if `skip_delete` is not
@@ -36,6 +40,7 @@ switch nargin
          fig = gcf;
       end
       skip_delete = false;
+      formats = [".png", ".fig", ".svg"];
    case 2
       if isa(fig,'matlab.ui.Figure')
          [outPath,filename,~] = fileparts(filename);
@@ -44,19 +49,27 @@ switch nargin
          fig = gcf;
       end
       skip_delete = false;
+      formats = [".png", ".fig", ".svg"];
    case 3
       if ~isa(fig,'matlab.ui.Figure')
          error('Too many input arguments. With three args, first arg to default.savefig must be a figure handle.');
       end
       [outPath,filename] = parseName(filename,tag);
       skip_delete = false;
+      formats = [".png", ".fig", ".svg"];
     case 4
       if ~isa(fig,'matlab.ui.Figure')
          error('Too many input arguments. With four args, first arg to default.savefig must be a figure handle.');
       end
       [outPath,filename] = parseName(filename,tag);
-   otherwise
-      error('Too many input arguments. default.savefig takes up to 4 args.');
+      formats = [".png", ".fig", ".svg"];
+    case 5
+      if ~isa(fig,'matlab.ui.Figure')
+         error('Too many input arguments. With five args, first arg to default.savefig must be a figure handle.');
+      end
+      [outPath,filename] = parseName(filename,tag);
+    otherwise
+      error('Too many input arguments. default.savefig takes up to 5 args.');
 end
 
 outPath = strrep(outPath,"\","/");
@@ -75,18 +88,24 @@ if isempty(fig.UserData) || isstruct(fig.UserData)
        'VectorGraphicsExportFcn', @()default.savefig(fig, filename, tag) ...
        ); 
 end
-savefig(fig,fname);
-try
-    saveas(fig,strcat(fname, ".svg"),"svg");
-catch me
-    disp(me);
-    warning('Could not save %s', strcat(fname, ".svg"));
+if contains(formats, ".fig")
+    savefig(fig,fname);
 end
-try
-    saveas(fig,strcat(fname, ".png"),"png");
-catch me
-    disp(me);
-    warning('Could not save %s', strcat(fname, ".png"));
+if contains(formats, ".svg")
+    try
+        saveas(fig,strcat(fname, ".svg"),"svg");
+    catch me
+        disp(me);
+        warning('Could not save %s', strcat(fname, ".svg"));
+    end
+end
+if contains(formats, ".png")
+    try
+        saveas(fig,strcat(fname, ".png"),"png");
+    catch me
+        disp(me);
+        warning('Could not save %s', strcat(fname, ".png"));
+    end
 end
 if ~skip_delete
     delete(fig);
