@@ -88,10 +88,10 @@ if isempty(fig.UserData) || isstruct(fig.UserData)
        'VectorGraphicsExportFcn', @()default.savefig(fig, filename, tag) ...
        ); 
 end
-if contains(formats, ".fig")
+if contains(".fig",formats)
     savefig(fig,fname);
 end
-if contains(formats, ".svg")
+if contains(".svg",formats)
     try
         saveas(fig,strcat(fname, ".svg"),"svg");
     catch me
@@ -99,7 +99,7 @@ if contains(formats, ".svg")
         warning('Could not save %s', strcat(fname, ".svg"));
     end
 end
-if contains(formats, ".png")
+if contains(".png",formats)
     try
         saveas(fig,strcat(fname, ".png"),"png");
     catch me
