@@ -129,7 +129,11 @@ end
       if nargin < 2
          filename = f;
       else
-         filename = strcat(f,"_",tag);
+          if strlength(tag) > 0
+            filename = strcat(f,"_",tag);
+          else
+            filename = f;
+          end
       end
    end
 end
